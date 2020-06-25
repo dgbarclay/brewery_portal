@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<!--
+<meta http-equiv="refresh" content="30">
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+<section class="hero is-primary is-info">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Barnaby's Brewhouse
+      </h1>
+      <h2 class="subtitle">
+        Brewery Dashboard
+      </h2>
+    </div>
+  </div>
+</section>
+  <head>
+    <meta charset="utf-8">
+    <title>Brewery Dashboard</title>
+  </head>
+  <body>
+    <div class="tile is-ancestor">
+      <div class="tile is-vertical is-8">
+        <div class="tile">
+          <div class="tile is-parent is-vertical">
+            <article class="tile is-child box">
+            <p class="title">Brew new beer:</p>
+            <form method="get">
+            <input type="radio" name="beer" value="Organic Pilsner" class="radio" checked> Organic Pilsner<br>
+            <input type="radio" name="beer" value="Organic Dunkel" class="radio"> Organic Dunkel<br>
+            <input type="radio" name="beer" value="Organic Red Helles" class="radio"> Organic Red Helles<br><br>
+            Date Required:
+            <input type="date" name="date_required" class="input is-rounded"><br><br>
+            <input type="text" name="quantity" placeholder="Quantity" class="input is-rounded"><br><br>
+            <input type="radio" name="process" value="Fermenter" class="radio" checked> Fermentation<br>
+            <input type="radio" name="process" value="conditioner" class="radio"> Conditioning and carbonation<br><br>
+            <input type="submit" value="Brew Beer" class="button">
+            </form>
+            </article>
+          </div>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Beer in Stock: </p>
+            {% for key in BEER_IN_STOCK %}
+                <p>{{key}}: {{BEER_IN_STOCK[key]}}</p>
+            {% endfor%}
+            <p><br></p>
+            <p><b>Add stock:</b></p>
+            <form method="get">
+            <input type="radio" name="beer_stock" value="Organic Pilsner" class="radio" checked> Organic Pilsner<br>
+            <input type="radio" name="beer_stock" value="Organic Dunkel" class="radio"> Organic Dunkel<br>
+            <input type="radio" name="beer_stock" value="Organic Red Helles" class="radio"> Organic Red Helles<br><br>
+            <input type="text" name="quantity_stock" placeholder="Quantity" class="input is-rounded"><br><br>
+            <input type="submit" value="Add stock" class="button">
+            <p><br></p>
+            </form>
+            <p class="title">Active Brewing: </p>
+            <div class="content">
+            <form method="get" action="">
+            <input type="submit" value="Clear Brewing List" name="clear_active" class="button">
+            </form>
+            {% for value in ACTIVE_BREWING %}
+                <p>{{value}}</p>
+            {% endfor%}
+            </div>
+            <p class="title">Current Tank Status: </p>
+            <form method="get" action="">
+            <input type="submit" value="Reset Tanks" name="reset_tanks" class="button">
+            </form>
+              <p><br></p>
+            <div class="content">
+              {% for key in BREWHOUSE_TANKS %}
+                  <p><b>{{BREWHOUSE_TANKS[key]['Name']}}</b> | {{BREWHOUSE_TANKS[key]['Volume']}} litres | {{BREWHOUSE_TANKS[key]['Capability']}} | Active: <b>{{BREWHOUSE_TANKS[key]['Active']}}</b> | Containing Beer: <b>{{BREWHOUSE_TANKS[key]['Beer']}}</b></p>
+              {% endfor%}
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="tile is-parent">
+        <article class="tile is-child box">
+          <p class="title">Notifications:</p>
+          <div class="content">
+            <form method="get" action="">
+            <input type="submit" value="Clear Notifications" name="clear" class="button">
+            </form>
+          {% for notification in NOTIFICATION %}
+              <p>{{notification}}</p>
+          {% endfor%}
+          </div>
+          <p class="title">Bottle Sales Predictions: </p>
+          <form method="get" action="">
+          <input type="radio" name="beer_prediction" value="Organic Pilsner" class="radio" checked> Organic Pilsner<br>
+          <input type="radio" name="beer_prediction" value="Organic Dunkel" class="radio"> Organic Dunkel<br>
+          <input type="radio" name="beer_prediction" value="Organic Red Helles" class="radio"> Organic Red Helles<br><br>
+          Select month:
+          <input type="month" name="date_prediction" class="input is-rounded"><br><br>
+          <input type="submit" value="Search" class="button">
+          </form>
+          {% if PREDICTION > 0 %}
+            <p><b>Prediction for {{date_prediction}}:</b></p>
+            <p><b>Prediction:</b> {{PREDICTION}}</p>
+            <p><b>Prediction +25%:</b> {{PREDICTION_UPPER}}</p>
+            <p><b>Prediction -25%:</b> {{PREDICTION_LOWER}}</p>
+          {% endif %}
+          <p><br></p>
+          <article class="tile is-child box">
+            <p class="title"><b>Predicted Sales:</b></p>
+            <div class="content">
+              <p>Graph to show previous 12 months and predicted future growth for each beer type.</p>
+              <div><img src = '{{ graph }}'></img></div>
+            </div>
+          </article>
+          <p><br></p>
+          <p class="title">Add to CSV file: </p>
+          <form method="get">
+          <input type="radio" name="beer_csv" value="Organic Pilsner" class="radio" checked> Organic Pilsner<br>
+          <input type="radio" name="beer_csv" value="Organic Dunkel" class="radio"> Organic Dunkel<br>
+          <input type="radio" name="beer_csv" value="Organic Red Helles" class="radio"> Organic Red Helles<br><br>
+          Date Required:
+          <input type="date" name="date_required_csv" class="input is-rounded"><br><br>
+          <input type="text" name="invoice_csv" placeholder="Invoice Number" class="input is-rounded"><br><br>
+          <input type="text" name="quantity_csv" placeholder="Quantity" class="input is-rounded"><br><br>
+          <input type="text" name="gyle_number_csv" placeholder="Gyle Number" class="input is-rounded"><br><br>
+          <input type="text" name="customer_name_csv" placeholder="Customer Name" class="input is-rounded"><br><br>
+          <input type="submit" value="Update" class="button">
+          </form>
+          </article>
+
+      </div>
+    </div>
+  </body>
+</html>
